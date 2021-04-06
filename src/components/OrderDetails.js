@@ -2,15 +2,19 @@ import React, { useContext } from 'react';
 import { BiRupee } from 'react-icons/bi'
 import { Button, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 // import {useLocation} from "react-router-dom"
-import { ItemContext, AmountContext } from './Home'
+import { CartContext, AmountContext } from './Home'
 import RenderCartItems from './RenderCartItems';
 import '../styles.css'
+import * as moment from 'moment'
+import { DateContext } from './Home'
 
 function OrderDetails() {
     // const location = useLocation()
-    const itemsDetails = useContext(ItemContext)
-    const cartDetails = itemsDetails.cartState.cartDetails;
+    const cartData = useContext(CartContext)
+    const cartDetails = cartData.cartState.cartDetails;
     const amount = useContext(AmountContext)
+    const dateContext = useContext(DateContext)
+    const selectedDate = moment(dateContext.date).format("DD-MM-YYYY");
 
 return (
     <div className="container order-details">
@@ -20,7 +24,7 @@ return (
                 <Card.Body>
                     <Card.Title className="cart-details-align">
                         <h4>Buffet</h4>
-                        <h4>Date 14-11-2019</h4>
+                        <h4>Date {selectedDate}</h4>
                     </Card.Title>
                 </Card.Body>
                 <ListGroup className="list-group-flush">

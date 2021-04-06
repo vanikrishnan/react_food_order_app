@@ -83,10 +83,10 @@ color: black !important
     border-bottom: 1.5px dashed gray !important;
 }
 
-.list-group-item > .btn {
+/* .list-group-item > .btn {
     width: 160px;
     height: 37px;
-}
+} */
 
 .order-details > h4, .order-details > .row {
     display: flex;
@@ -103,4 +103,18 @@ border: 1px solid #ffc107!important;
 
 .btn-group {
     float: right;
+}
+
+.food-items .sub, .cart-details-align .sub {
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.food-items .add, .cart-details-align .add {
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+}
+
+.food-items .btn-group, .cart-details-align .btn-group {
+    width: 120px !important;
 }

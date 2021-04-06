@@ -1,11 +1,14 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useCallback, useState } from 'react'
 import {Route, Switch, BrowserRouter as Router} from 'react-router-dom'
 import OrderDetails from './OrderDetails'
 import NavBar from './NavBar'
 import App from '../App';
+import debounce from 'lodash.debounce';
 
 export const ItemContext = React.createContext()
 export const AmountContext = React.createContext()
+export const DateContext = React.createContext(); 
+export const CartContext = React.createContext();
 
   const fetchState = {
     loading: true,
@@ -16,6 +19,8 @@ export const AmountContext = React.createContext()
   const initialState = {
     cartDetails: []
   }
+
+  const currentDate = new Date();
 
   const addItem = (state, card, id) => {
     console.log(id, "add item", card)
@@ -78,7 +83,102 @@ export const AmountContext = React.createContext()
     }
   }
 
-const reducer = (state, action) => {
+  const sortCartItems = (items, category, order) => {
+    if (order === 'asc') {
+        if (category === 'itemname') {
+        items.sort((a, b) => {
+            const item1 = a.itemname.toLowerCase();
+            const item2 = b.itemname.toLowerCase();
+            return (item1 > item2) ? 1 : ((item1 < item2) ? -1 : 0)
+        })
+        console.log(items, "asc itemname")
+        return {
+          loading: false,
+          error: '',
+          items: items
+        }
+    }
+        else {
+        items.sort((a, b) => {
+            return a[category] - b[category]
+        })
+        console.log(items, "asc price")
+        return {
+          loading: false,
+          error: '',
+          items: items
+        }
+    }
+    } else {
+        if (category === 'itemname') {
+        items.sort((a, b) => {
+            const item1 = a.itemname.toLowerCase();
+            const item2 = b.itemname.toLowerCase();
+            return (item1 < item2) ? 1 : ((item1 > item2) ? -1 : 0)
+        })
+        console.log(items, "desc itemname")
+        return {
+          loading: false,
+          error: '',
+          items: items
+        }
+    }
+        else {
+        items.sort((a, b) => {
+            return b[category] - a[category]
+        })
+        console.log(items, "desc price")
+        return {
+          loading: false,
+          error: '',
+          items: items
+        }
+    }
+    }
+  }
+
+const calculateTotal = (cartArr) => {
+    let sum = 0;
+    for (let i = 0; i < cartArr.length; i++) {
+        sum = sum + (cartArr[i].count * cartArr[i].price)
+    }
+    console.log('Total', sum)
+    return sum;
+}
+
+const dateReducer = (state, action) => {
+  switch(action.type) {
+    case 'triggerDateChange': 
+    return action.date;
+    default: 
+    return state;
+  }
+}
+
+function Home() {
+  const [searchValue, setSearchValue] = useState('')
+
+  const debounceSearch = useCallback(debounce((items,searchValue) => {
+      return {
+        loading: false,
+        error: '',
+        items: items.filter(item => {
+      return Object.keys(item).some(key => {
+        return String(item[key]).includes(searchValue)
+      })
+    })
+      }
+  }, 1000), [] )
+
+  const searchCartItems = async(items, searchText) => {
+  console.log(searchText,"searchText")
+    setSearchValue(searchText);
+    const filteredResult = await debounceSearch(items, searchText);
+    console.log(filteredResult,"filteredResult")
+    return filteredResult;
+  }
+
+  const reducer = (state, action) => {
     switch(action.type) {
         case 'FETCH_SUCCESS':
             return {
@@ -92,46 +192,45 @@ const reducer = (state, action) => {
             error: 'Error While Fetching',
             items: []
         }
+        case 'SORT':
+        return sortCartItems(state.items, action.category, action.order)
+        case 'SEARCH':
+        return searchCartItems(state.items, action.searchText)
         default : 
         return state;
 
     }
 }
 
-const calculateTotal = (cartArr) => {
-    let sum = 0;
-    for (let i = 0; i < cartArr.length; i++) {
-        sum = sum + (cartArr[i].count * cartArr[i].price)
-    }
-    console.log('Total', sum)
-    return sum;
-}
-
-function Home() {
 const [fetchedState, fetchDispatch] = useReducer(reducer, fetchState)
 const [cartState, cartDispatch] = useReducer(countReducer, initialState)
+const [date, dateDispatch] = useReducer(dateReducer, currentDate)
 
 const totalAmount = calculateTotal(cartState.cartDetails)
 console.log(cartState.cartDetails, totalAmount, "totalAmount","Home")
 
     return (
+      <ItemContext.Provider value={{itemsState: fetchedState, dispatchItems: fetchDispatch}}>
         <Router>
         <NavBar />
         <div>
     <Switch>
-      <ItemContext.Provider value={{itemsState: fetchedState, dispatchItems: fetchDispatch, cartState: cartState, cartDispatch: cartDispatch}}>
+        <CartContext.Provider value={{cartState: cartState, cartDispatch: cartDispatch}}>
         <AmountContext.Provider value={totalAmount}>
+        <DateContext.Provider value = {{date: date, dateDispatch: dateDispatch}}>
       <Route exact path="/">
         <App />
       </Route>
       <Route exact path="/checkout">
         <OrderDetails />
       </Route>
+      </DateContext.Provider>
       </AmountContext.Provider>
-      </ItemContext.Provider>
+      </CartContext.Provider>
     </Switch>
     </div>
     </Router>
+    </ItemContext.Provider>
     )
 }
 

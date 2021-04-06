@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, Form, FormControl, InputGroup } from 'react-bootstrap'
 import { FaEarlybirds, FaUserCircle } from "react-icons/fa";
 import { IconContext } from 'react-icons';
 import { HiSearch } from "react-icons/hi";
+import { ItemContext } from './Home'
 import '../styles.css'
 
 function NavBar() {
+    const itemsDetails = useContext(ItemContext)
+    console.log(itemsDetails, "Navbar")
 
     const handleClick = () => {
         alert(`Helo vani`)
@@ -23,7 +26,9 @@ function NavBar() {
                     <InputGroup.Prepend>
                     <InputGroup.Text id="basic-addon1" className="bg-warning"><HiSearch color="white"/></InputGroup.Text>
                     </InputGroup.Prepend>
-                    <FormControl type="text" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" className="mr-sm-2" />
+                    <FormControl type="text" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" className="mr-sm-2" onChange={(e) => { 
+                        console.log(e.target.value);
+                        itemsDetails.dispatchItems({type: 'SEARCH', searchText: e.target.value})}}/>
                     </InputGroup>
                     </Form>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />

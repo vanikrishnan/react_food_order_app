@@ -2,6 +2,7 @@ import SubNavbar from './components/SubNavbar'
 import FoodItems from './components/FoodItems'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import "react-datepicker/dist/react-datepicker.css";
 import  React from 'react';
 
 function App() {
