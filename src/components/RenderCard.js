@@ -11,6 +11,8 @@ function RenderCard({card, index}) {
     const findIndex = cartData.cartState.cartDetails.length > 0 ? cartData.cartState.cartDetails.findIndex(item => item.id === index): -1;
     const count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count: 0;
 
+    // const count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count: 0;
+
     return (
         <Card style={{ width: '16rem' }} className="mt-3 mr-3 food-items">
         <Card.Body>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { IconContext } from 'react-icons';
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
-import { Navbar, Nav, Button } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 // import { BiCalendarEvent } from 'react-icons/bi'
 import { RiFilter2Fill } from 'react-icons/ri'
 import { DateContext, ItemContext } from './Home'
@@ -19,7 +19,7 @@ function SubNavbar() {
     const popover = (
         <Popover id="popover-basic">
             {/* <Popover.Title as="h3">Popover</Popover.Title> */}
-            <Popover.Content as="h5">
+            <Popover.Content as="h6">
                 <div>By Price <FiArrowUp onClick={() => itemsDetails.dispatchItems({type: 'SORT', category: 'price', order: 'asc'})}/> <FiArrowDown onClick={() => itemsDetails.dispatchItems({type: 'SORT', category: 'price', order: 'desc'})}/></div>
                 <div>By Item <FiArrowUp onClick={() => itemsDetails.dispatchItems({type: 'SORT', category: 'itemname', order: 'asc'})}/> <FiArrowDown onClick={() => itemsDetails.dispatchItems({type: 'SORT', category: 'itemname', order: 'desc'})}/></div>
             </Popover.Content>
@@ -28,7 +28,7 @@ function SubNavbar() {
 
     const TriggerPopover = () => (
         <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
-        <Button><RiFilter2Fill /></Button>
+        <RiFilter2Fill />
         </OverlayTrigger>
     )
     
@@ -46,7 +46,7 @@ function SubNavbar() {
                     <Navbar.Collapse id="responsive-navbar-nav"  className="justify-content-end">
                     <Nav>
                     <Navbar.Text>
-                    <DatePicker selected={dateContext.date} onChange={date => dateContext.dateDispatch({type: 'triggerDateChange', date})} />
+                    <DatePicker selected={dateContext.date} minDate={new Date()} onChange={date => dateContext.dateDispatch({type: 'triggerDateChange', date})} />
                     {selectedDate}
                     </Navbar.Text>
                     </Nav>

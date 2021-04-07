@@ -118,3 +118,12 @@ border: 1px solid #ffc107!important;
 .food-items .btn-group, .cart-details-align .btn-group {
     width: 120px !important;
 }
+
+.order-details .btn {
+    width: 160px !important;
+}
+
+.Toastify__toast--default {
+background: #1df390 !important;
+color: black !important;
+}

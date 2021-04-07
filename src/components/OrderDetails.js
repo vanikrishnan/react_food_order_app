@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { BiRupee } from 'react-icons/bi'
 import { Button, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 // import {useLocation} from "react-router-dom"
@@ -7,6 +7,7 @@ import RenderCartItems from './RenderCartItems';
 import '../styles.css'
 import * as moment from 'moment'
 import { DateContext } from './Home'
+import { ToastContainer, toast } from 'react-toastify';
 
 function OrderDetails() {
     // const location = useLocation()
@@ -15,7 +16,13 @@ function OrderDetails() {
     const amount = useContext(AmountContext)
     const dateContext = useContext(DateContext)
     const selectedDate = moment(dateContext.date).format("DD-MM-YYYY");
+    const [show, setShow] = useState(false)
 
+    const notify = () => {
+        setShow(true)
+        toast('Your Order Confirmed');
+    }
+    
 return (
     <div className="container order-details">
         <h4>Your Order Details</h4>
@@ -47,7 +54,8 @@ return (
                 <h5>Grand Total</h5>
                 <span><BiRupee />{amount}</span>
                 </div>
-                <Button type="button" className="rounded-pill">Confirm Order</Button>
+                <Button type="button" className="rounded-pill" disabled={show} onClick={notify}>Confirm Order</Button>
+                <ToastContainer />
                 </ListGroupItem>
                 </ListGroup>
             </Card>

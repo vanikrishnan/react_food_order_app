@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useCallback } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
  import { IconContext } from "react-icons";
  import { ItemContext } from "./Home";
  import "../styles.css";
@@ -19,10 +19,12 @@ import React, { useContext, useEffect, useCallback } from "react";
            payload: response.data,
          });
          console.log(response, "response");
+         return response;
        })
        .catch((err) => {
          itemsDetails.dispatchItems({ type: "FETCH_ERROR" });
          console.log(err);
+         return err;
        });
    }, []);
   
