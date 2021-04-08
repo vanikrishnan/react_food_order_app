@@ -127,3 +127,9 @@ border: 1px solid #ffc107!important;
 background: #1df390 !important;
 color: black !important;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

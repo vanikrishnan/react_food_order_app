@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { IconContext } from 'react-icons';
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, Button } from 'react-bootstrap'
 // import { BiCalendarEvent } from 'react-icons/bi'
 import { RiFilter2Fill } from 'react-icons/ri'
 import { DateContext, ItemContext } from './Home'
@@ -28,7 +28,7 @@ function SubNavbar() {
 
     const TriggerPopover = () => (
         <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
-        <RiFilter2Fill />
+        <Button><RiFilter2Fill /></Button>
         </OverlayTrigger>
     )
     

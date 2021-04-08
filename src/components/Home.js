@@ -4,6 +4,8 @@ import OrderDetails from './OrderDetails'
 import NavBar from './NavBar'
 import App from '../App';
 import 'react-toastify/dist/ReactToastify.css';
+import LoginPage from './LoginPage'
+import Register from './Register'
 
 export const ItemContext = React.createContext()
 export const AmountContext = React.createContext()
@@ -247,18 +249,25 @@ const totalAmount = calculateTotal(cartState.cartDetails)
 console.log(cartState.cartDetails, totalAmount, "totalAmount","Home")
 
     return (
-      <ItemContext.Provider value={{itemsState: fetchedState, dispatchItems: fetchDispatch}}>
+        <ItemContext.Provider value={{itemsState: fetchedState, dispatchItems: fetchDispatch}}>
         <Router>
-        <NavBar />
         <div>
     <Switch>
         <CartContext.Provider value={{cartState: cartState, cartDispatch: cartDispatch}}>
         <AmountContext.Provider value={totalAmount}>
         <DateContext.Provider value = {{date: date, dateDispatch: dateDispatch}}>
-      <Route exact path="/">
+        <Route exact path="/">
+      <LoginPage />
+    </Route>
+    <Route exact path="/register">
+      <Register />
+    </Route>
+      <Route exact path="/home">
+      <NavBar />
         <App />
       </Route>
       <Route exact path="/checkout">
+      <NavBar />
         <OrderDetails />
       </Route>
       </DateContext.Provider>
@@ -271,4 +280,4 @@ console.log(cartState.cartDetails, totalAmount, "totalAmount","Home")
     )
 }
 
-export default Home
+export default React.memo(Home)
