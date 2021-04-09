@@ -28,7 +28,7 @@ function SubNavbar() {
 
     const TriggerPopover = () => (
         <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
-        <Button><RiFilter2Fill /></Button>
+        <RiFilter2Fill />
         </OverlayTrigger>
     )
     

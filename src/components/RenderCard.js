@@ -8,10 +8,8 @@ import { BiRupee } from 'react-icons/bi'
 
 function RenderCard({card, index}) {
     const cartData = useContext(CartContext)
-    const findIndex = cartData.cartState.cartDetails.length > 0 ? cartData.cartState.cartDetails.findIndex(item => item.id === index): -1;
-    const count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count: 0;
-
-    // const count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count: 0;
+    const findIndex = cartData.cartState.cartDetails.length > 0 ? cartData.cartState.cartDetails.findIndex(item => item.itemname === card.itemname): -1;
+    const count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count: 0; 
 
     return (
         <Card style={{ width: '16rem' }} className="mt-3 mr-3 food-items">
@@ -27,11 +25,11 @@ function RenderCard({card, index}) {
             <div>
             {count !== 0 ? 
                 <ButtonGroup aria-label="Basic example">
-                <Button variant="secondary" className="rounded-pill sub"><GrFormSubtract size="1.25em" onClick={() => cartData.cartDispatch({type: 'remove', index})}/></Button>
+                <Button variant="secondary" className="rounded-pill sub"><GrFormSubtract size="1.25em" onClick={() => cartData.cartDispatch({type: 'remove', card})}/></Button>
                 <Button variant="secondary" className="text-dark">{count}</Button>
-                <Button variant="secondary" className="rounded-pill add"><GrFormAdd size="1.25em" onClick={() => cartData.cartDispatch({type: 'add', card, index})}/></Button>
+                <Button variant="secondary" className="rounded-pill add"><GrFormAdd size="1.25em" onClick={() => cartData.cartDispatch({type: 'add', card})}/></Button>
               </ButtonGroup>
-              : <Button className="rounded-pill" onClick={() => cartData.cartDispatch({type: 'add', card, index})}>Add</Button>} 
+              : <Button className="rounded-pill" onClick={() => cartData.cartDispatch({type: 'add', card})}>Add</Button>} 
             </div>
         </Card.Body>
         </Card>

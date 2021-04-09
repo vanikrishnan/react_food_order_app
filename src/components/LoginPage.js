@@ -17,8 +17,9 @@ function LoginPage() {
         e.preventDefault()
         axios.post('http://localhost:4000/users/login', loginData)
         .then(response => {
-            if (response) {
+            if (response.data && response.data.token) {
             alert('Success login')
+            localStorage.setItem('token', response.data.token)
             history.push('/home')
             }
         })

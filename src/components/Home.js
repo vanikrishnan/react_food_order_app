@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoginPage from './LoginPage'
 import Register from './Register'
 
+
 export const ItemContext = React.createContext()
 export const AmountContext = React.createContext()
 export const DateContext = React.createContext(); 
@@ -124,27 +125,6 @@ const searchCartItems =  (defaultItems, searchText) => {
 
 function Home() {
 
-  const updateCount = (state, cart) => {
-    const { items, defaultItems } = state
-    const {id, count} = cart
-    const existingItemIndex = items.findIndex((item, index) => index === id)
-    if (existingItemIndex >= 0) {
-      const copyExistingItems = items.slice();
-      const existingItem = copyExistingItems[existingItemIndex];
-      const updateExistingItem = {
-        ...existingItem, count: count
-      }
-      copyExistingItems[existingItemIndex] = updateExistingItem;
-      console.log(existingItemIndex, copyExistingItems[existingItemIndex], "Update count")
-      return {
-        loading: false,
-        error: '',
-        items: copyExistingItems,
-        defaultItems
-      }
-    }
-  }
-
   const reducer = (state, action) => {
     switch(action.type) {
         case 'FETCH_SUCCESS':
@@ -161,8 +141,6 @@ function Home() {
             items: [],
             defaultItems: []
         }
-        case 'UPDATE_COUNT':
-        return updateCount(state, action.cart)
         case 'SORT':
         return sortCartItems(state, action.category, action.order)
         case 'SEARCH':
@@ -176,16 +154,16 @@ function Home() {
 const [fetchedState, fetchDispatch] = useReducer(reducer, fetchState)
 
 
-const addItem = (state, card, id) => {
-  console.log(id, "add item", card)
+const addItem = (state, card) => {
+  console.log("add item", card.itemname)
   const { itemname, price } = card
   const cart = {
-    id,
+    // id,
     itemname,
     price,
     count: 1
   } 
-  const existingProductIndex = state.cartDetails.findIndex(item => item.id === id)
+  const existingProductIndex = state.cartDetails.findIndex(item => item.itemname === itemname)
   if (existingProductIndex >= 0) {
   const cartItems = state.cartDetails.slice();
   const existingProduct = cartItems[existingProductIndex]
@@ -193,18 +171,17 @@ const addItem = (state, card, id) => {
         ...existingProduct, count: existingProduct.count + cart.count
       }
   cartItems[existingProductIndex] = updateExistingProduct;
-  fetchDispatch({type: 'UPDATE_COUNT', cart: updateExistingProduct})
   return {cartDetails: cartItems}
   }
   else {
-    fetchDispatch({type: 'UPDATE_COUNT', cart})
     return {cartDetails: [...state.cartDetails, cart]}
   }
 }
 
-const removeItem = (state, id) => {
-  console.log(id, "remove item")
-  const existingProductIndex = state.cartDetails.findIndex(item => item.id === id)
+const removeItem = (state, card) => {
+  console.log(card.itemname, "remove item")
+  const { itemname } = card
+  const existingProductIndex = state.cartDetails.findIndex(item => item.itemname === itemname)
   if (existingProductIndex >= 0) {
     const cartItems = state.cartDetails.slice();
     console.log(cartItems, "cartItems");
@@ -212,7 +189,6 @@ const removeItem = (state, id) => {
     if (existingProduct.count - 1 === 0) {
       cartItems.splice(existingProductIndex, 1)
     console.log(cartItems,"removed state.cartDetails")
-    fetchDispatch({type: 'UPDATE_COUNT', cart: {id: existingProduct.id, count: 0}})
     return {cartDetails: cartItems}
     }
     else {
@@ -221,7 +197,6 @@ const removeItem = (state, id) => {
       ...existingProduct, count: existingProduct.count - 1
     }
     cartItems[existingProductIndex] = updateExistingProduct;
-   fetchDispatch({type: 'UPDATE_COUNT', cart: updateExistingProduct})
    return {cartDetails: cartItems}
   }
   }
@@ -233,9 +208,9 @@ const removeItem = (state, id) => {
 const countReducer = (state, action) => {
   switch(action.type) {
     case 'add': 
-     return addItem(state, action.card, action.index)
+     return addItem(state, action.card)
     case 'remove':
-     return removeItem(state, action.index)
+     return removeItem(state, action.card)
     default: 
       return state;
   }

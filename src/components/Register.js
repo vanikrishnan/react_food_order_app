@@ -22,10 +22,12 @@ function Register() {
         axios.post('http://localhost:4000/users/createUser', registerData)
         .then(response => {
             alert(`Successfully registered ${response.data.id}`)
+            // alert('User Registered Successfully');
             history.push('/')
         })
         .catch(err => {
             console.log(err)
+            alert('Something went wrong');
         })
     }
 
@@ -64,7 +66,7 @@ function Register() {
                     </label>
                     <input type ="number" value={registerData.contactNo} name="contactNo" onChange={changeHandler}></input>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </form>
             </div>
         </div>

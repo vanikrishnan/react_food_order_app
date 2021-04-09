@@ -11,8 +11,13 @@ import React, { useCallback, useContext, useEffect, useMemo } from "react";
    console.log("context", itemsDetails);
  
    const fetchData = useCallback(() => {
+     console.log(localStorage.getItem('token'), "token")
      axios
-       .get("he-public-data/smartQFood8bef5a2.json")
+       .get('http://localhost:4000/users/foodItems', {
+         headers: {
+           'Authorization': `Bearer ${localStorage.getItem('token')}`
+         }
+       }) //he-public-data/smartQFood8bef5a2.json
        .then((response) => {
          itemsDetails.dispatchItems({
            type: "FETCH_SUCCESS",
@@ -47,7 +52,7 @@ import React, { useCallback, useContext, useEffect, useMemo } from "react";
              {itemsDetails.itemsState.loading
                ? "Loading"
                : itemsDetails.itemsState.items.map((item, index) => (
-                   <RenderCard key={index} card={item} index={index} />
+                   <RenderCard key={item.itemname} card={item} index={index} />
                  ))}
              {itemsDetails.itemsState.error ? itemsDetails.itemsState.error : ""}
              {/* {items.map(renderCard)} */}

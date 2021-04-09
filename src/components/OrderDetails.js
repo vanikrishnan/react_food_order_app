@@ -8,9 +8,13 @@ import '../styles.css'
 import * as moment from 'moment'
 import { DateContext } from './Home'
 import { ToastContainer, toast } from 'react-toastify';
+import { useHistory } from 'react-router';
 
 function OrderDetails() {
     // const location = useLocation()
+    const history = useHistory()
+    if (!localStorage.getItem('token')) 
+    history.push('/')
     const cartData = useContext(CartContext)
     const cartDetails = cartData.cartState.cartDetails;
     const amount = useContext(AmountContext)
@@ -20,7 +24,7 @@ function OrderDetails() {
 
     const notify = () => {
         setShow(true)
-        toast('Your Order Confirmed');
+        toast.success('Your Order Confirmed');
     }
     
 return (
@@ -35,7 +39,7 @@ return (
                     </Card.Title>
                 </Card.Body>
                 <ListGroup className="list-group-flush">
-                {cartDetails.length > 0  ?  cartDetails.map((cart) => <RenderCartItems key={cart.id} cart={cart}/>)
+                {cartDetails.length > 0  ?  cartDetails.map((cart) => <RenderCartItems key={cart.itemname} cart={cart}/>)
             : 'No Items' }
                 </ListGroup>
                 <ListGroup className="list-group-flush">

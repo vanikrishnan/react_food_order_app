@@ -4,8 +4,12 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import "react-datepicker/dist/react-datepicker.css";
 import  React from 'react';
+import { useHistory } from 'react-router';
 
 function App() {
+  const history = useHistory()
+    if (!localStorage.getItem('token')) 
+    history.push('/')
 
   return (
     <div className="App">

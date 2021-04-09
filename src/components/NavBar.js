@@ -6,8 +6,12 @@ import { HiSearch } from "react-icons/hi";
 import { ItemContext } from './Home'
 import { debounce } from 'lodash'
 import '../styles.css'
+import { useHistory } from 'react-router';
 
 function NavBar() {
+    const history = useHistory()
+    if (!localStorage.getItem('token')) 
+    history.push('/')
     const itemsDetails = useContext(ItemContext)
     console.log(itemsDetails, "Navbar")
 
