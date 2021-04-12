@@ -24,6 +24,7 @@ function LoginPage() {
             }
         })
         .catch(err => {
+            alert('Wrong password')
             console.log(err)
         })
     }   

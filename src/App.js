@@ -3,13 +3,15 @@ import FoodItems from './components/FoodItems'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import "react-datepicker/dist/react-datepicker.css";
-import  React from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
+import { Route, Switch, BrowserRouter as Router } from 'react-router-dom'
+import LoginPage from './components/LoginPage'
+import Register from './components/Register'
+import Home from './components/Home'
+
 
 function App() {
-  const history = useHistory()
-    if (!localStorage.getItem('token')) 
-    history.push('/')
 
   return (
     <div className="App">
@@ -27,8 +29,22 @@ function App() {
           Learn React
         </a>
       </header> */}
-      <SubNavbar />
-      <FoodItems />
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <LoginPage />
+          </Route>
+          <Route exact path="/register">
+            <Register />
+          </Route>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="*">
+            Not Found
+    </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }

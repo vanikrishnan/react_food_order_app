@@ -1,108 +1,112 @@
 import React, { useReducer } from 'react'
-import {Route, Switch, BrowserRouter as Router} from 'react-router-dom'
+import { Route, Switch, BrowserRouter as Router, useRouteMatch } from 'react-router-dom'
 import OrderDetails from './OrderDetails'
 import NavBar from './NavBar'
+import SubNavbar from './SubNavbar'
+import FoodItems from './FoodItems'
 import App from '../App';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginPage from './LoginPage'
 import Register from './Register'
+import jwt from 'jsonwebtoken'
 
 
 export const ItemContext = React.createContext()
 export const AmountContext = React.createContext()
-export const DateContext = React.createContext(); 
+export const DateContext = React.createContext();
 export const CartContext = React.createContext();
+export const UserContext = React.createContext()
 
-  const fetchState = {
-    loading: true,
-    error: '',
-    items: [],
-    defaultItems: []
+const fetchState = {
+  loading: true,
+  error: '',
+  items: [],
+  defaultItems: []
+}
+
+const initialState = {
+  cartDetails: []
+}
+
+const currentDate = new Date();
+
+const sortCartItems = (state, category, order) => {
+  const { items, defaultItems } = state
+  if (order === 'asc') {
+    if (category === 'itemname') {
+      console.log(items, "asc itemname")
+      return {
+        loading: false,
+        error: '',
+        items: items.sort((a, b) => {
+          const item1 = a.itemname.toLowerCase();
+          const item2 = b.itemname.toLowerCase();
+          return (item1 > item2) ? 1 : ((item1 < item2) ? -1 : 0)
+        }),
+        defaultItems
+      }
+    }
+    else {
+      console.log(items, "asc price")
+      return {
+        loading: false,
+        error: '',
+        items: items.sort((a, b) => {
+          return a[category] - b[category]
+        }),
+        defaultItems
+      }
+    }
+  } else {
+    if (category === 'itemname') {
+      console.log(items, "desc itemname")
+      return {
+        loading: false,
+        error: '',
+        items: items.sort((a, b) => {
+          const item1 = a.itemname.toLowerCase();
+          const item2 = b.itemname.toLowerCase();
+          return (item1 < item2) ? 1 : ((item1 > item2) ? -1 : 0)
+        }),
+        defaultItems
+      }
+    }
+    else {
+      console.log(items, "desc price")
+      return {
+        loading: false,
+        error: '',
+        items: items.sort((a, b) => {
+          return b[category] - a[category]
+        }),
+        defaultItems
+      }
+    }
   }
-
-  const initialState = {
-    cartDetails: []
-  }
-
-  const currentDate = new Date();
-
-  const sortCartItems = (state, category, order) => {
-    const { items, defaultItems } = state
-    if (order === 'asc') {
-        if (category === 'itemname') {
-        console.log(items, "asc itemname")
-        return {
-          loading: false,
-          error: '',
-          items: items.sort((a, b) => {
-            const item1 = a.itemname.toLowerCase();
-            const item2 = b.itemname.toLowerCase();
-            return (item1 > item2) ? 1 : ((item1 < item2) ? -1 : 0)
-        }),
-          defaultItems
-        }
-    }
-        else {
-        console.log(items, "asc price")
-        return {
-          loading: false,
-          error: '',
-          items: items.sort((a, b) => {
-            return a[category] - b[category]
-        }),
-          defaultItems
-        }
-    }
-    } else {
-        if (category === 'itemname') {
-        console.log(items, "desc itemname")
-        return {
-          loading: false,
-          error: '',
-          items: items.sort((a, b) => {
-            const item1 = a.itemname.toLowerCase();
-            const item2 = b.itemname.toLowerCase();
-            return (item1 < item2) ? 1 : ((item1 > item2) ? -1 : 0)
-        }),
-          defaultItems
-        }
-    }
-        else {
-        console.log(items, "desc price")
-        return {
-          loading: false,
-          error: '',
-          items: items.sort((a, b) => {
-            return b[category] - a[category]
-        }),
-          defaultItems
-        }
-    }
-    }
-  }
+}
 
 const calculateTotal = (cartArr) => {
-    let sum = 0;
-    for (let i = 0; i < cartArr.length; i++) {
-        sum = sum + (cartArr[i].count * cartArr[i].price)
-    }
-    console.log('Total', sum)
-    return sum;
+  let sum = 0;
+  for (let i = 0; i < cartArr.length; i++) {
+    sum = sum + (cartArr[i].count * cartArr[i].price)
+  }
+  console.log('Total', sum)
+  return sum;
 }
 
 const dateReducer = (state, action) => {
-  switch(action.type) {
-    case 'triggerDateChange': 
-    return action.date;
-    default: 
-    return state;
+  switch (action.type) {
+    case 'triggerDateChange':
+      return action.date;
+    default:
+      return state;
   }
 }
 
-const searchCartItems =  (defaultItems, searchText) => {
-  console.log(searchText,"searchText")
-    if (searchText) {
-      console.log("Inside if in search")
+const searchCartItems = (defaultItems, searchText) => {
+  console.log(searchText, "searchText")
+  if (searchText) {
+    console.log("Inside if in search")
     return {
       loading: false,
       error: '',
@@ -114,145 +118,162 @@ const searchCartItems =  (defaultItems, searchText) => {
       defaultItems
     }
   }
-    else
+  else
     return {
       loading: false,
       error: '',
       items: defaultItems,
       defaultItems
     }
-  }
+}
 
 function Home() {
+  const { path, url } = useRouteMatch();
+  console.log("path", path, "url", url)
+  let username, email, cartItems
 
   const reducer = (state, action) => {
-    switch(action.type) {
-        case 'FETCH_SUCCESS':
-            return {
-                loading: false,
-                error: '',
-                items: [...fetchState.items, ...action.payload],
-                defaultItems: [...fetchState.items, ...action.payload]
-            }
-        case 'FETCH_ERROR':
+    switch (action.type) {
+      case 'FETCH_SUCCESS':
         return {
-            loading: false,
-            error: 'Error While Fetching',
-            items: [],
-            defaultItems: []
+          loading: false,
+          error: '',
+          items: [...fetchState.items, ...action.payload],
+          defaultItems: [...fetchState.items, ...action.payload]
         }
-        case 'SORT':
+      case 'FETCH_ERROR':
+        return {
+          loading: false,
+          error: 'Error While Fetching',
+          items: [],
+          defaultItems: []
+        }
+      case 'SORT':
         return sortCartItems(state, action.category, action.order)
-        case 'SEARCH':
+      case 'SEARCH':
         return searchCartItems(state.defaultItems, action.searchText)
-        default : 
+      default:
         return state;
 
     }
-}
+  }
 
-const [fetchedState, fetchDispatch] = useReducer(reducer, fetchState)
+  const [fetchedState, fetchDispatch] = useReducer(reducer, fetchState)
 
 
-const addItem = (state, card) => {
-  console.log("add item", card.itemname)
-  const { itemname, price } = card
-  const cart = {
-    // id,
-    itemname,
-    price,
-    count: 1
-  } 
-  const existingProductIndex = state.cartDetails.findIndex(item => item.itemname === itemname)
-  if (existingProductIndex >= 0) {
-  const cartItems = state.cartDetails.slice();
-  const existingProduct = cartItems[existingProductIndex]
-  const updateExistingProduct = {
+  const addItem = (state, card) => {
+    console.log("add item", card.itemname)
+    const { itemname, price } = card
+    const cart = {
+      // id,
+      itemname,
+      price,
+      count: 1
+    }
+    const existingProductIndex = state.cartDetails.findIndex(item => item.itemname === itemname)
+    if (existingProductIndex >= 0) {
+      const cartItems = state.cartDetails.slice();
+      const existingProduct = cartItems[existingProductIndex]
+      const updateExistingProduct = {
         ...existingProduct, count: existingProduct.count + cart.count
       }
-  cartItems[existingProductIndex] = updateExistingProduct;
-  return {cartDetails: cartItems}
-  }
-  else {
-    return {cartDetails: [...state.cartDetails, cart]}
-  }
-}
-
-const removeItem = (state, card) => {
-  console.log(card.itemname, "remove item")
-  const { itemname } = card
-  const existingProductIndex = state.cartDetails.findIndex(item => item.itemname === itemname)
-  if (existingProductIndex >= 0) {
-    const cartItems = state.cartDetails.slice();
-    console.log(cartItems, "cartItems");
-    const existingProduct = cartItems[existingProductIndex]
-    if (existingProduct.count - 1 === 0) {
-      cartItems.splice(existingProductIndex, 1)
-    console.log(cartItems,"removed state.cartDetails")
-    return {cartDetails: cartItems}
+      cartItems[existingProductIndex] = updateExistingProduct;
+      return { cartDetails: cartItems }
     }
     else {
-    console.log('else')
-    const updateExistingProduct = {
-      ...existingProduct, count: existingProduct.count - 1
+      return { cartDetails: [...state.cartDetails, cart] }
     }
-    cartItems[existingProductIndex] = updateExistingProduct;
-   return {cartDetails: cartItems}
   }
+
+  const removeItem = (state, card) => {
+    console.log(card.itemname, "remove item")
+    const { itemname } = card
+    const existingProductIndex = state.cartDetails.findIndex(item => item.itemname === itemname)
+    if (existingProductIndex >= 0) {
+      const cartItems = state.cartDetails.slice();
+      console.log(cartItems, "cartItems");
+      const existingProduct = cartItems[existingProductIndex]
+      if (existingProduct.count - 1 === 0) {
+        cartItems.splice(existingProductIndex, 1)
+        console.log(cartItems, "removed state.cartDetails")
+        return { cartDetails: cartItems }
+      }
+      else {
+        console.log('else')
+        const updateExistingProduct = {
+          ...existingProduct, count: existingProduct.count - 1
+        }
+        cartItems[existingProductIndex] = updateExistingProduct;
+        return { cartDetails: cartItems }
+      }
+    }
+    else {
+      return { cartDetails: [...state.cartDetails] }
+    }
   }
-  else {
-    return {cartDetails: [...state.cartDetails]}
+
+  const countReducer = (state, action) => {
+    switch (action.type) {
+      case 'add':
+        return addItem(state, action.card)
+      case 'remove':
+        return removeItem(state, action.card)
+      default:
+        return state;
+    }
   }
-}
 
-const countReducer = (state, action) => {
-  switch(action.type) {
-    case 'add': 
-     return addItem(state, action.card)
-    case 'remove':
-     return removeItem(state, action.card)
-    default: 
-      return state;
+  const [cartState, cartDispatch] = useReducer(countReducer, initialState)
+  const [date, dateDispatch] = useReducer(dateReducer, currentDate)
+
+
+  const totalAmount = calculateTotal(cartState.cartDetails)
+  console.log(cartState.cartDetails, totalAmount, "totalAmount", "Home")
+  const extractJWTToken = (token) => {
+
+    jwt.verify(token, process.env.REACT_APP_TOKEN_SECRET, (err, user) => {
+
+      if (err) console.log(err)
+
+      if (user) {
+        username = user.username
+        email = user.email
+        cartItems = user.cartDetails.length > 0 ? user.cartDetails : []
+      }
+
+    })
+
   }
-}
 
-const [cartState, cartDispatch] = useReducer(countReducer, initialState)
-const [date, dateDispatch] = useReducer(dateReducer, currentDate)
+  if (localStorage.getItem('token'))
+    extractJWTToken(localStorage.getItem('token'))
 
-
-const totalAmount = calculateTotal(cartState.cartDetails)
-console.log(cartState.cartDetails, totalAmount, "totalAmount","Home")
-
-    return (
-        <ItemContext.Provider value={{itemsState: fetchedState, dispatchItems: fetchDispatch}}>
-        <Router>
-        <div>
-    <Switch>
-        <CartContext.Provider value={{cartState: cartState, cartDispatch: cartDispatch}}>
-        <AmountContext.Provider value={totalAmount}>
-        <DateContext.Provider value = {{date: date, dateDispatch: dateDispatch}}>
-        <Route exact path="/">
-      <LoginPage />
-    </Route>
-    <Route exact path="/register">
-      <Register />
-    </Route>
-      <Route exact path="/home">
-      <NavBar />
-        <App />
-      </Route>
-      <Route exact path="/checkout">
-      <NavBar />
-        <OrderDetails />
-      </Route>
-      </DateContext.Provider>
-      </AmountContext.Provider>
-      </CartContext.Provider>
-    </Switch>
-    </div>
-    </Router>
+  return (
+    <ItemContext.Provider value={{ itemsState: fetchedState, dispatchItems: fetchDispatch }}>
+      <div>
+        <CartContext.Provider value={{ cartState: cartState, cartDispatch: cartDispatch }}>
+          <AmountContext.Provider value={totalAmount}>
+            <DateContext.Provider value={{ date: date, dateDispatch: dateDispatch }}>
+              <UserContext.Provider value={{ username: username, email: email, cartItems: cartItems }}>
+                <NavBar />
+                <Router>
+                  <Switch>
+                    <Route exact path={`${path}/`}>
+                      <SubNavbar />
+                      <FoodItems />
+                    </Route>
+                    <Route exact path={`${path}/checkout`}>
+                      <OrderDetails />
+                    </Route>
+                  </Switch>
+                </Router>
+              </UserContext.Provider>
+            </DateContext.Provider>
+          </AmountContext.Provider>
+        </CartContext.Provider>
+      </div>
     </ItemContext.Provider>
-    )
+  )
 }
 
 export default React.memo(Home)

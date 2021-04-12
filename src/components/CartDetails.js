@@ -5,14 +5,12 @@ import { Link, useHistory } from 'react-router-dom'
 import { BiRupee } from 'react-icons/bi'
 import '../styles.css'
 import { Button } from 'react-bootstrap'
-
-
 function CartDetails() {
     const history = useHistory() 
     
     const navigateCheckout = () => {
         console.log("navigate")
-        history.push('/checkout')
+        history.push('/home/checkout')
         //   return <Link to={
         //      {
         //     pathname: "/checkout", 
