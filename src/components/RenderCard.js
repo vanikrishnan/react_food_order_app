@@ -1,23 +1,15 @@
 import React, { useContext } from 'react'
 import '../styles.css'
-import { CartContext, UserContext } from './Home'
+import { CartContext } from './Home'
 import { Button, ButtonGroup } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card'
 import { GrFormAdd, GrFormSubtract } from 'react-icons/gr'
 import { BiRupee } from 'react-icons/bi'
 
-function RenderCard({ card, index }) {
+function RenderCard({ card }) {
     const cartData = useContext(CartContext)
-    const userDetails = useContext(UserContext)
-    let findIndex, count
-    if (userDetails.cartItems.length > 0) {
-        findIndex = userDetails.cartItems.length > 0 ? userDetails.cartItems.findIndex(item => item.itemname === card.itemname) : -1;
-        count = (findIndex >= 0 && userDetails.cartItems[findIndex]) ? userDetails.cartItems[findIndex].count : 0;
-    }
-    else {
-        findIndex = cartData.cartState.cartDetails.length > 0 ? cartData.cartState.cartDetails.findIndex(item => item.itemname === card.itemname) : -1;
-        count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count : 0;
-    }
+    const findIndex = cartData.cartState.cartDetails.length > 0 ? cartData.cartState.cartDetails.findIndex(item => item.itemname === card.itemname) : -1;
+    const count = (findIndex >= 0 && cartData.cartState.cartDetails[findIndex]) ? cartData.cartState.cartDetails[findIndex].count : 0;
 
     return (
         <Card style={{ width: '16rem' }} className="mt-3 mr-3 food-items">

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
  import { IconContext } from "react-icons";
  import { ItemContext } from "./Home";
  import "../styles.css";
@@ -51,8 +51,8 @@ import React, { useCallback, useContext, useEffect, useMemo } from "react";
            <div className="row card-align">
              {itemsDetails.itemsState.loading
                ? "Loading"
-               : itemsDetails.itemsState.items.map((item, index) => (
-                   <RenderCard key={item.itemname} card={item} index={index} />
+               : itemsDetails.itemsState.items.map((item) => (
+                   <RenderCard key={item.itemname} card={item} />
                  ))}
              {itemsDetails.itemsState.error ? itemsDetails.itemsState.error : ""}
              {/* {items.map(renderCard)} */}

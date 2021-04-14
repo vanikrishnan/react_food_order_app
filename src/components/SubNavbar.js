@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { IconContext } from 'react-icons';
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
-import { Navbar, Nav, Button } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 // import { BiCalendarEvent } from 'react-icons/bi'
 import { RiFilter2Fill } from 'react-icons/ri'
 import { DateContext, ItemContext } from './Home'

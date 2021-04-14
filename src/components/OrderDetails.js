@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { BiRupee } from 'react-icons/bi'
 import { Button, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 // import {useLocation} from "react-router-dom"
-import { CartContext, AmountContext, UserContext } from './Home'
+import { CartContext, AmountContext } from './Home'
 import RenderCartItems from './RenderCartItems';
 import '../styles.css'
 import * as moment from 'moment'
@@ -21,7 +21,6 @@ function OrderDetails() {
     const amount = useContext(AmountContext)
     const dateContext = useContext(DateContext)
     const selectedDate = moment(dateContext.date).format("DD-MM-YYYY");
-    const userDetails = useContext(UserContext)
     const [show, setShow] = useState(false)
 
     const notify = () => {
@@ -41,7 +40,7 @@ return (
                     </Card.Title>
                 </Card.Body>
                 <ListGroup className="list-group-flush">
-                { userDetails.cartItems.length > 0 ? (userDetails.cartItems.map((cart) => <RenderCartItems key={cart.itemname} cart={cart}/>)) : (cartDetails.length > 0  ?  cartDetails.map((cart) => <RenderCartItems key={cart.itemname} cart={cart}/>)
+                { (cartDetails.length > 0  ?  cartDetails.map((cart) => <RenderCartItems key={cart.itemname} cart={cart}/>)
             : 'No Items') }
                 </ListGroup>
                 <ListGroup className="list-group-flush">

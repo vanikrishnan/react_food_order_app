@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, Form, FormControl, InputGroup, Button } from 'react-bootstrap'
 import { FaEarlybirds, FaUserCircle } from "react-icons/fa";
 import { IconContext } from 'react-icons';
@@ -10,7 +10,7 @@ import { useHistory } from 'react-router';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import axios from "axios";
-import jwt from 'jsonwebtoken'
+import _ from 'lodash'
 
 function NavBar() {
     const history = useHistory()
@@ -19,26 +19,8 @@ function NavBar() {
     const itemsDetails = useContext(ItemContext)
     const userDetails = useContext(UserContext)
     console.log(itemsDetails, "Navbar", userDetails, "userDetails")
-    let username, email
     const cartData = useContext(CartContext)
     const cartDetails = cartData.cartState.cartDetails;
-
-    const extractJWTToken = (token) => {
-
-        jwt.verify(token, process.env.REACT_APP_TOKEN_SECRET, (err, user) => {
-
-            if (err) console.log(err)
-
-            if (user) {
-                username = user.username
-                email = user.email
-            }
-
-        })
-
-    }
-
-    extractJWTToken(localStorage.getItem('token'))
 
     const logoutUser = () => {
         axios
@@ -59,8 +41,8 @@ function NavBar() {
     }
 
     const handleLogout = () => {
-
-        if (cartDetails.length > 0) {
+        console.log("cartDetails", cartDetails,"userDetails.cartItems", userDetails.cartItems, _.difference(cartDetails,userDetails.cartItems));
+        if (_.difference(cartDetails,userDetails.cartItems).length > 0) {
             const postObj = {
                 email: userDetails.email,
                 cartDetails

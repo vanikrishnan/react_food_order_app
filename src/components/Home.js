@@ -1,14 +1,12 @@
-import React, { useReducer } from 'react'
-import { Route, Switch, BrowserRouter as Router, useRouteMatch } from 'react-router-dom'
+import React, { useEffect, useReducer, useState } from 'react'
+import { Route, Switch, BrowserRouter as Router, useRouteMatch, useHistory } from 'react-router-dom'
 import OrderDetails from './OrderDetails'
 import NavBar from './NavBar'
 import SubNavbar from './SubNavbar'
 import FoodItems from './FoodItems'
-import App from '../App';
 import 'react-toastify/dist/ReactToastify.css';
-import LoginPage from './LoginPage'
-import Register from './Register'
 import jwt from 'jsonwebtoken'
+import { Button, Modal  } from 'react-bootstrap'
 
 
 export const ItemContext = React.createContext()
@@ -129,8 +127,16 @@ const searchCartItems = (defaultItems, searchText) => {
 
 function Home() {
   const { path, url } = useRouteMatch();
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   console.log("path", path, "url", url)
-  let username, email, cartItems
+  let username, email = ''
+  let cartItems = []
+  let exp = null
+  const history = useHistory()
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -222,23 +228,19 @@ function Home() {
         return state;
     }
   }
-
-  const [cartState, cartDispatch] = useReducer(countReducer, initialState)
-  const [date, dateDispatch] = useReducer(dateReducer, currentDate)
-
-
-  const totalAmount = calculateTotal(cartState.cartDetails)
-  console.log(cartState.cartDetails, totalAmount, "totalAmount", "Home")
   const extractJWTToken = (token) => {
 
     jwt.verify(token, process.env.REACT_APP_TOKEN_SECRET, (err, user) => {
 
-      if (err) console.log(err)
+      if (err) {
+        console.log(err)
+      }
 
       if (user) {
         username = user.username
         email = user.email
         cartItems = user.cartDetails.length > 0 ? user.cartDetails : []
+        exp = user.exp
       }
 
     })
@@ -247,6 +249,31 @@ function Home() {
 
   if (localStorage.getItem('token'))
     extractJWTToken(localStorage.getItem('token'))
+
+    useEffect(() => {
+        const expirationTime = ((exp * 1000)) // converting exp into millisec since Date.now() in millisec
+        //  2 mins before expiration ((exp * 1000) - 120000)
+        if (Date.now() > (expirationTime)) {  
+          handleShow();
+        }
+      return () => {
+        console.log("In Cleanup")
+      }
+    })
+
+    if (cartItems.length > 0)
+    initialState.cartDetails = cartItems;
+
+  const [cartState, cartDispatch] = useReducer(countReducer, initialState)
+  const [date, dateDispatch] = useReducer(dateReducer, currentDate)
+
+  const totalAmount = calculateTotal(cartState.cartDetails)
+  console.log(cartState.cartDetails, totalAmount, "totalAmount", "Home")
+
+  const handleClick = () => {
+    localStorage.clear()
+    history.push('/')
+  }
 
   return (
     <ItemContext.Provider value={{ itemsState: fetchedState, dispatchItems: fetchDispatch }}>
@@ -271,6 +298,20 @@ function Home() {
             </DateContext.Provider>
           </AmountContext.Provider>
         </CartContext.Provider>
+        <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Alert !</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Token expired. Relogin to Continue</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClick}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClick}>
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
       </div>
     </ItemContext.Provider>
   )

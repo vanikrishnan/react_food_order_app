@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 import '../styles.css'
 import { CartContext, AmountContext } from './Home'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { BiRupee } from 'react-icons/bi'
 import '../styles.css'
 import { Button } from 'react-bootstrap'
