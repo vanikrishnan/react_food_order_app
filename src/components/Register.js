@@ -38,33 +38,33 @@ function Register() {
     }
 
     return (
-        <div className="container">
-            <h3 className="d-flex justify-content-center">Register</h3>
-        <div className="row justify-content-center">
+        <div className="container align_register">
+        <div className="row">
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
+            <h3>Register</h3>
+                <div className="form-group">
+                    <label className="form-label">
                         User Name
                     </label>
-                    <input type ="text" value={registerData.name} name="name" onChange={changeHandler}></input>
+                    <input className="form-control" type ="text" value={registerData.name} name="name" onChange={changeHandler}></input>
                 </div>
-                <div>
-                    <label>
+                <div className="form-group">
+                    <label className="form-label">
                         Email Id
                     </label>
-                    <input type ="text" value={registerData.email} name="email" onChange={changeHandler}></input>
+                    <input className="form-control" type ="text" value={registerData.email} name="email" onChange={changeHandler}></input>
                 </div>
-                <div>
-                    <label>
+                <div className="form-group">
+                    <label className="form-label">
                         Password
                     </label>
-                    <input type ="password" value={registerData.password} name="password" onChange={changeHandler}></input>
+                    <input className="form-control" type ="password" value={registerData.password} name="password" onChange={changeHandler}></input>
                 </div>
-                <div>
-                    <label>
+                <div className="form-group">
+                    <label className="form-label">
                         Contact No
                     </label>
-                    <input type ="number" value={registerData.contactNo} name="contactNo" onChange={changeHandler}></input>
+                    <input className="form-control" type ="number" value={registerData.contactNo} name="contactNo" onChange={changeHandler}></input>
                 </div>
                 <button type="submit">Register</button>
             </form>

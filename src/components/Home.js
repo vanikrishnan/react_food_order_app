@@ -252,7 +252,7 @@ function Home() {
 
     useEffect(() => {
         const expirationTime = ((exp * 1000)) // converting exp into millisec since Date.now() in millisec
-        //  2 mins before expiration ((exp * 1000) - 120000)
+        //  2 mins before expiration ((exp * 1000) - 120000) for millisec (120 sec(2 minutes) * 1000)
         if (Date.now() > (expirationTime)) {  
           handleShow();
         }

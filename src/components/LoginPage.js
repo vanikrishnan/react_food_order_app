@@ -36,29 +36,29 @@ function LoginPage() {
     }
 
     return (
-        <div className="container">
-        <h3 className="d-flex justify-content-center">Login</h3>
-        <div className="row justify-content-center">
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        User Name
+        <div className="container align_register">
+            <div className="row">
+                <form onSubmit={handleSubmit}>
+                    <h3>Login</h3>
+                    <div className="form-group">
+                        <label className="form-label">
+                            User Name
                     </label>
-                    <input type ="text" value={loginData.name} name="email" onChange={changeHandler}></input>
-                </div>
-                <div>
-                    <label>
-                        Password
+                        <input className="form-control" type="text" value={loginData.name} name="email" onChange={changeHandler}></input>
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">
+                            Password
                     </label>
-                    <input type ="password" value={loginData.password} name="password" onChange={changeHandler}></input>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            </div>
-            <div className="row justify-content-center">
-            <h4>Not Registered yet? 
+                        <input className="form-control" type="password" value={loginData.password} name="password" onChange={changeHandler}></input>
+                    </div>
+                    <button type="submit">Login</button>
+                    <div className="row justify-content-center">
+                        <h4>Not Registered yet?
                 <Link to="/register">Sign up</Link>
-            </h4>
+                        </h4>
+                    </div>
+                </form>
             </div>
         </div>
     )
